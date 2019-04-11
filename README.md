@@ -20,6 +20,10 @@ or
 ```bash
 npm run start:dev
 ```
+and open your browser
+```
+http://loalhost:3000/
+```
 
 ## License
 
