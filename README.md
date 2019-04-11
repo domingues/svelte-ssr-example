@@ -1,6 +1,6 @@
-# [Svelte](https://v3.svelte.technology/) SSR Example with Code Split
+# Svelte SSR Example with Code Split
 
-A Svelte 3 server side render, with hashed JS and CSS chunks, using [Rollup](https://github.com/rollup/rollup) and [rollup-plugin-css-chunks](https://github.com/domingues/rollup-plugin-css-chunks).
+A [Svelte ](https://v3.svelte.technology/) server side render, with hashed JS and CSS chunks, using [Rollup](https://github.com/rollup/rollup) and [rollup-plugin-css-chunks](https://github.com/domingues/rollup-plugin-css-chunks).
 
 ## Installation
 
