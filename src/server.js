@@ -7,7 +7,7 @@ const compression = require('compression');
 function parseBundleTree(file) {
 	const bundle_tree = JSON.parse(fs.readFileSync(path.join(__dirname, file)));
 
-	let imports = {};
+	const imports = {};
 	for (const f in bundle_tree) {
 		imports[f] = {
 			css: [...(bundle_tree[f].assetImports || [])],
