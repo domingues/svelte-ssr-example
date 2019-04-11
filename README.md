@@ -22,7 +22,7 @@ npm run start:dev
 ```
 and open your browser
 ```
-http://loalhost:3000/
+http://localhost:3000/
 ```
 
 ## License
