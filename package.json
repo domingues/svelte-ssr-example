@@ -21,7 +21,7 @@
     "build": "rollup -c",
     "autobuild": "rollup -c -w",
     "start:dev": "run-p autobuild server:dev",
-    "server:dev": "nodemon -L --delay 1000ms --watch dist/ssr --watch dist/server --exec 'node dist/server/server.js'",
+    "server:dev": "nodemon -L --delay 1000ms --watch dist/server --exec 'node dist/server/server.js'",
     "lint": "eslint src"
   }
 }
