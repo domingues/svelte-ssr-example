@@ -24,7 +24,7 @@
 </style>
 
 <svelte:head>
-	<title>{pageTitle} :: Alberto's Website</title>
+	<title>{pageTitle} :: Ferando's Website</title>
 </svelte:head>
 
 <div class=header>

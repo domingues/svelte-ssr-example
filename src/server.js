@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const polka = require('polka');
@@ -7,15 +9,18 @@ const compression = require('compression');
 function parseBundleTree(file) {
 	const bundle_tree = JSON.parse(fs.readFileSync(path.join(__dirname, file)));
 
+	const filterCSS = i => bundle_tree[i].isAsset && i.endsWith('.css');
+	const filterJS = i => !bundle_tree[i].isAsset;
+
 	const imports = {};
 	for (const f in bundle_tree) {
 		imports[f] = {
-			css: [...(bundle_tree[f].assetImports || [])],
-			js: [...(bundle_tree[f].imports || [])]
+			css: [...(bundle_tree[f].imports && bundle_tree[f].imports.filter(filterCSS) || [])],
+			js: [...(bundle_tree[f].imports && bundle_tree[f].imports.filter(filterJS) || [])]
 		};
 		for (const f_i of imports[f].js) {
-			imports[f].css.push(...(bundle_tree[f_i].assetImports || []));
-			imports[f].js.push(...(bundle_tree[f_i].imports || []));
+			imports[f].css.push(...(bundle_tree[f_i].imports && bundle_tree[f_i].imports.filter(filterCSS) || []));
+			imports[f].js.push(...(bundle_tree[f_i].imports && bundle_tree[f_i].imports.filter(filterJS) || []));
 		}
 		imports[f].css = [...new Set(imports[f].css)];
 		imports[f].js = [...new Set(imports[f].js)];
@@ -23,7 +28,7 @@ function parseBundleTree(file) {
 
 	const map = {};
 	for (const f in imports) {
-		if (bundle_tree[f].isEntry!==true) {
+		if (bundle_tree[f].isEntry !== true) {
 			delete imports[f];
 		} else {
 			map[path.basename(f).split('.')[0]] = f;
@@ -59,7 +64,7 @@ function buildPage(component, props_json, { clientImports, serverClientMap }, pu
 	try {
 		Component = require(`./${component}`);
 	} catch (err) {
-		return { error: `importing module "${component}"`,	code: err	};
+		return { error: `importing module "${component}"`, code: err };
 	}
 	try {
 		props = JSON.parse(props_json);
@@ -71,7 +76,7 @@ function buildPage(component, props_json, { clientImports, serverClientMap }, pu
 		head = component.head;
 		html = component.html;
 	} catch (err) {
-		return { error: 'rendering module',	code: err	};
+		return { error: 'rendering module', code: err };
 	}
 
 	const component_file = serverClientMap[component];
@@ -93,9 +98,9 @@ polka()
 	.use('/static', sirv(path.join(__dirname, '../public')))
 	.get('/*', (req, res) => {
 		try {
-			const result = buildPage(req.params['*'] ? req.params['*']: 'index',
-								  req.query.props ? req.query.props : '{}',
-								  { clientImports, serverClientMap }, '/static');
+			const result = buildPage(req.params['*'] ? req.params['*'] : 'index',
+				req.query.props ? req.query.props : '{}',
+				{ clientImports, serverClientMap }, '/static');
 			if (result.error) {
 				res.statusCode = 500;
 				res.end(`Error ${result.error}:\n${result.code}.`);

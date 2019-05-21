@@ -1,5 +1,6 @@
 <script>
 	import Template from './components/Template.svelte';
+	import Icon from './components/Icon.svelte';
 	export let size = 32;
 	const step = 8;
 	let nextDown, nextUp, disableDown, disableUp;
@@ -43,5 +44,5 @@
 		<a class:disabled={disableUp} href='?props={JSON.stringify({size: nextUp})}'
 			on:click|preventDefault={increase}>Increase font size to {nextUp}</a>
 	</div>
-	<h1 style='font-size: {size}px'>Wellcome!</h1>
+	<h1 style='font-size: {size}px'>Wellcome <Icon name="globe" title="globe icon" />!</h1>
 </Template>
