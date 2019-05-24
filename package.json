@@ -4,6 +4,7 @@
   "devDependencies": {
     "compression": "^1.7.4",
     "eslint": "^5.16.0",
+    "eslint-plugin-svelte3": "^1.2.3",
     "feather-icons": "^4.21.0",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.19.0",
@@ -24,7 +25,7 @@
     "autostart": "nodemon -L --delay 500ms --watch dist/server",
     "start:dev": "run-p --max-parallel 2 mkdirp autobuild autostart",
     "mkdirp": "mkdirp dist/server",
-    "lint": "eslint src"
+    "lint": "eslint --ext .js,.mjs,.svelte src"
   },
   "dependencies": {
     "rollup-plugin-css-chunks": "^1.2.0",

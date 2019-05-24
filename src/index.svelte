@@ -5,25 +5,25 @@
 	const step = 8;
 	let nextDown, nextUp, disableDown, disableUp;
 	function update() {
-		nextDown = size - step;
-		if (nextDown < 10) {
-			nextDown = 10;
-		}
-		nextUp = size + step;
-		if (nextUp > 100) {
-			nextUp = 100;
-		}
-		disableDown = size===10;
-		disableUp = size===100;
+	    nextDown = size - step;
+	    if (nextDown < 10) {
+	        nextDown = 10;
+	    }
+	    nextUp = size + step;
+	    if (nextUp > 100) {
+	        nextUp = 100;
+	    }
+	    disableDown = size===10;
+	    disableUp = size===100;
 	}
 	update();
 	function decrease() {
-		size = nextDown;
-		update();
+	    size = nextDown;
+	    update();
 	}
 	function increase() {
-		size = nextUp;
-		update();
+	    size = nextUp;
+	    update();
 	}
 </script>
 
