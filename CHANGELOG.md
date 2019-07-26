@@ -18,6 +18,6 @@
  - Fix import order of CSS and JS dependencies;
  - Workaround for a strange [chrome bug](https://stackoverflow.com/a/42969257);
  - Better path join;
- - Don't compress nor serve static files in production;
+ - Don't compress responses nor serve static files in production;
  - Set cache control for static files;
  - Add content type and length of html pages;
