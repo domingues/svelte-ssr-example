@@ -24,7 +24,7 @@
 </style>
 
 <svelte:head>
-	<title>{pageTitle} :: Ferando's Website</title>
+	<title>{pageTitle} :: Fernando's Website</title>
 </svelte:head>
 
 <div class=header>
@@ -33,7 +33,7 @@
 <slot />
 <div class=footer>
 	<span>
-		Build with <a href='https://v3.svelte.technology/'>svelte</a>,
+		Build with <a href='https://svelte.dev'>svelte</a>,
 		<a href='https://github.com/rollup/rollup'>rollup</a> and
 		<a href='https://github.com/domingues/rollup-plugin-css-chunks'>rollup-plugin-css-chunks</a>.
 	</span>

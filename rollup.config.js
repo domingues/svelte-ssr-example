@@ -5,85 +5,95 @@ import css from 'rollup-plugin-css-chunks';
 import bundleTree from 'rollup-plugin-extract-bundle-tree';
 import importAssets from 'rollup-plugin-import-assets';
 import { terser } from 'rollup-plugin-terser';
+import commonjs from 'rollup-plugin-commonjs';
+import replace from 'rollup-plugin-replace';
+import del from 'rollup-plugin-delete';
 
 const production = !process.env.ROLLUP_WATCH;
+const publicStaticPath = process.env.PUBLIC_STATIC_PATH || '/static';
 
 export default [
-	{
-		input: 'src/*.svelte',
-		output: {
-			dir: 'dist/public',
-			sourcemap: !production,
-			format: 'esm',
-			chunkFileNames: '[hash].js',
-			entryFileNames: '[name].[hash].js'
-		},
-		plugins: [
-			multiInput(),
-			resolve(),
-			svelte({
-				dev: !production,
-				immutable: true,
-				hydratable: true,
-				emitCss: true
-			}),
-			css({
-				sourcemap: !production,
-				chunkFileNames: '[hash].css',
-				entryFileNames: '[hash].css'
-			}),
-			importAssets({
-				fileNames: '[hash].[ext]',
-				publicPath: '/static/',
-			}),
-			bundleTree({
-				file: 'dist/server/client-tree.json'
-			}),
-			production && terser()
-		],
-		watch: {
-			clearScreen: false
-		},
-	},
-	{
-		input: 'src/*.svelte',
-		output: {
-			dir: 'dist/server',
-			format: 'cjs',
-		},
-		plugins: [
-			multiInput(),
-			resolve(),
-			svelte({
-				dev: !production,
-				immutable: true,
-				hydratable: true,
-				generate: 'ssr',
-			}),
-			css({
-				ignore: true
-			}),
-			importAssets({
-				fileNames: '[hash].[ext]',
-				publicPath: '/static/',
-				emitAssets: false,
-			}),
-			production && terser()
-		],
-	},
-	{
-		input: 'src/server.js',
-		output: {
-			file: 'dist/server/server.js',
-			format: 'cjs',
-		},
-		plugins: [
-			resolve(),
-			production && terser()
-		],
-		external: [
-			'fs', 'path',
-			'polka', 'serve-static'
-		],
-	}
+    {
+        input: ['src/*.svelte'],
+        output: {
+            dir: 'dist/client',
+            sourcemap: !production,
+            format: 'esm',
+            chunkFileNames: '[hash].js',
+            entryFileNames: '[name].[hash].js'
+        },
+        plugins: [
+            del({targets: 'dist/client/*'}),
+            multiInput(),
+            resolve({browser: true}),
+            svelte({
+                dev: !production,
+                immutable: true,
+                hydratable: true,
+                emitCss: true
+            }),
+            css({
+                sourcemap: !production,
+                chunkFileNames: '[hash].css',
+                entryFileNames: '[hash].css'
+            }),
+            importAssets({
+                fileNames: '[hash].[ext]',
+                publicPath: publicStaticPath,
+            }),
+            bundleTree({
+                file: 'dist/client-tree.json'
+            }),
+            production && terser()
+        ],
+        watch: {
+            clearScreen: false
+        },
+    },
+    {
+        input: ['src/*.svelte'],
+        output: {
+            dir: 'dist/server',
+            format: 'cjs',
+        },
+        plugins: [
+            del({targets: 'dist/server/*'}),
+            multiInput(),
+            resolve(),
+            svelte({
+                dev: !production,
+                immutable: true,
+                hydratable: true,
+                generate: 'ssr',
+            }),
+            css({
+                ignore: true
+            }),
+            importAssets({
+                fileNames: '[hash].[ext]',
+                publicPath: publicStaticPath,
+                emitAssets: false,
+            }),
+            production && terser()
+        ],
+    },
+    {
+        input: 'src/server.js',
+        output: {
+            file: 'dist/server.js',
+            format: 'cjs',
+        },
+        plugins: [
+            replace({
+                STATIC_PATH: publicStaticPath,
+                DEV_SERVER: !production,
+            }),
+            commonjs(),
+            resolve(),
+            production && terser()
+        ],
+        external: [
+            'fs', 'path', 'querystring', 'http'
+        ],
+    }
 ];

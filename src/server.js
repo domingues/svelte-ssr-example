@@ -1,43 +1,49 @@
-'use strict';
+import fs from 'fs';
+import path from 'path';
+import polka from 'polka';
+import sirv from 'sirv';
 
-const fs = require('fs');
-const path = require('path');
-const polka = require('polka');
-const sirv = require('sirv');
 const compression = require('compression');
 
 function parseBundleTree(file) {
     const bundle_tree = JSON.parse(fs.readFileSync(path.join(__dirname, file)));
 
-    const filterCSS = i => bundle_tree[i].isAsset && i.endsWith('.css');
-    const filterJS = i => !bundle_tree[i].isAsset;
+    const dfs_cache = {};
 
-    const imports = {};
-    for (const f in bundle_tree) {
-        imports[f] = {
-            css: [...(bundle_tree[f].imports && bundle_tree[f].imports.filter(filterCSS) || [])],
-            js: [...(bundle_tree[f].imports && bundle_tree[f].imports.filter(filterJS) || [])]
-        };
-        for (const f_i of imports[f].js) {
-            imports[f].css.push(...(bundle_tree[f_i].imports && bundle_tree[f_i].imports.filter(filterCSS) || []));
-            imports[f].js.push(...(bundle_tree[f_i].imports && bundle_tree[f_i].imports.filter(filterJS) || []));
+    function dfs(file) {
+        if (!dfs_cache[file]) {
+            const css = [], js = [];
+            if (bundle_tree[file].imports) {
+                for (const f of bundle_tree[file].imports) {
+                    if (!bundle_tree[f].isAsset) {
+                        const { css: c, js: j } = dfs(f);
+                        css.push(...c);
+                        js.push(...j);
+                        js.push(f);
+                    } else if (bundle_tree[f].isAsset && f.endsWith('.css')) {
+                        css.push(f);
+                    }
+                }
+            }
+            dfs_cache[file] = { css, js };
         }
-        imports[f].css = [...new Set(imports[f].css)];
-        imports[f].js = [...new Set(imports[f].js)];
+        return dfs_cache[file];
     }
 
-    const map = {};
-    for (const f in imports) {
-        if (bundle_tree[f].isEntry !== true) {
-            delete imports[f];
-        } else {
-            map[path.basename(f).split('.')[0]] = f;
-        }
+    const clientImports = {};
+    const serverClientMap = {};
+    for (const file in bundle_tree) {
+        if (bundle_tree[file].isEntry !== true) continue;
+        const { css, js } = dfs(file);
+        clientImports[file] = { css: [...new Set(css)], js: [...new Set(js)] };
+        serverClientMap[path.basename(file).split('.')[0]] = file;
     }
-    return { clientImports: imports, serverClientMap: map };
+
+    return { clientImports, serverClientMap };
 }
 
 function render(component_path, props_json, head, html) {
+    // the "<script> </script>" (with space) is to prevent a chrome bug https://stackoverflow.com/a/42969257
     return `<!doctype html>
 <html>
 <head>
@@ -55,6 +61,7 @@ function render(component_path, props_json, head, html) {
 			props: ${props_json}
 		});
 	</script>
+    <script> </script>
 </body>
 </html>`;
 }
@@ -62,7 +69,7 @@ function render(component_path, props_json, head, html) {
 function buildPage(component, props_json, { clientImports, serverClientMap }, public_static_path) {
     let Component, props, head, html;
     try {
-        Component = require(`./${component}`);
+        Component = require(path.join(__dirname, 'server', component));
     } catch (err) {
         return { error: `importing module "${component}"`, code: err };
     }
@@ -80,12 +87,12 @@ function buildPage(component, props_json, { clientImports, serverClientMap }, pu
     }
 
     const component_file = serverClientMap[component];
-    const component_path = `${public_static_path}/${component_file}`;
+    const component_path = `${path.join(public_static_path, component_file)}`;
     clientImports[component_file].css.forEach(f =>
-        head += `\n\t<link rel='stylesheet' href='${public_static_path}/${f}'>`);
-    head += `\n\t<script type='module' src='${component_path}'></script>`;
+        head += `\n\t<link rel='stylesheet' href='${path.join(public_static_path, f)}'>`);
     clientImports[component_file].js.forEach(f =>
-        head += `\n\t<script type='module' src='${public_static_path}/${f}'></script>`);
+        head += `\n\t<script type='module' src='${path.join(public_static_path, f)}'></script>`);
+    head += `\n\t<script type='module' src='${component_path}'></script>`;
     const page = render(component_path, props_json, head, html);
 
     return { page };
@@ -93,27 +100,40 @@ function buildPage(component, props_json, { clientImports, serverClientMap }, pu
 
 const { clientImports, serverClientMap } = parseBundleTree('client-tree.json');
 
-polka()
-    .use(compression())
-    .use('/static', sirv(path.join(__dirname, '../public')))
-    .get('/*', (req, res) => {
-        try {
-            const result = buildPage(req.params['*'] ? req.params['*'] : 'index',
-                req.query.props ? req.query.props : '{}',
-                { clientImports, serverClientMap }, '/static');
-            if (result.error) {
-                res.statusCode = 500;
-                res.end(`Error ${result.error}:\n${result.code}.`);
-            } else {
-                res.end(result.page);
-            }
-        } catch (err) {
-			console.error(err); // eslint-disable-line
+const HOST = process.env.NODE_HOST || '0.0.0.0';
+const PORT = process.env.NODE_PORT || 3000;
+
+const server = polka();
+if (DEV_SERVER) {// eslint-disable-line
+    server.use(compression({ threshold: 0 }));
+    server.use('STATIC_PATH', sirv(path.join(__dirname, 'client'), {
+        maxAge: 31536000,
+        immutable: true
+    }));
+}
+server.get('/*', (req, res) => {
+    try {
+        const result = buildPage(req.params['*'] ? req.params['*'] : 'index',
+            req.query.props ? req.query.props : '{}',
+            { clientImports, serverClientMap }, 'STATIC_PATH');
+        if (result.error) {
             res.statusCode = 500;
-            res.end(`Unknown error:\n${err}.`);
+            res.end(`Error ${result.error}:\n${result.code}.`);
+        } else {
+            const html = result.page;
+            res.writeHead(200, {
+                'Content-Type': 'text/html',
+                'Content-Length': html.length,
+            });
+            res.end(html);
         }
-    })
-    .listen(3000, err => {
+    } catch (err) {
+        console.error(err); // eslint-disable-line
+        res.statusCode = 500;
+        res.end(`Unknown error:\n${err}.`);
+    }
+})
+    .listen(PORT, HOST, err => {
         if (err) throw err;
-		console.log('> Running on localhost:3000'); // eslint-disable-line
+        console.log(`Running on http://${HOST}:${PORT}`); // eslint-disable-line
     });

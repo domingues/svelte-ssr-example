@@ -24,6 +24,16 @@ and open your browser
 ```
 http://localhost:3000/
 ```
+you can pass props in the url
+```
+http://10.215.14.166:3000/?props={%22size%22:64}
+```
+
+## Environment variables
+
+ - PUBLIC_STATIC_PATH
+ - NODE_HOST
+ - NODE_PORT
 
 ## License
 
