@@ -1,5 +1,12 @@
 # svelte-ssr-example changelog
 
+## 1.3.0 (02/08/2019)
+ - Allow POST requests;
+ - Set HTML content type charset to UTF 8;
+ - Add HTML tags to error messages;
+ - Enable cross-origin resource sharing for the static files in the development server;
+ - Upgrade dependencies;
+
 ## 1.2.0 (26/07/2019)
 
 ### Build

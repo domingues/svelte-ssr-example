@@ -12,26 +12,34 @@ npm install
 
 ## Usage
 
-```bash
+```shell script
 npm run build
 npm run start
 ```
 or
-```bash
+```shell script
 npm run start:dev
 ```
 and open your browser
-```
-http://localhost:3000/
+```shell script
+curl http://localhost:3000/
 ```
 you can pass props in the url
+```shell script
+curl http://localhost:3000/?props={%22size%22:64}
 ```
-http://10.215.14.166:3000/?props={%22size%22:64}
+or submit it a POST request
+```shell script
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"size":64}' \
+  http://localhost:3000/
 ```
 
 ## Environment variables
 
- - `$PUBLIC_STATIC_PATH`
+ - `$PUBLIC_STATIC_PATH`: path where the static files will be located,
+                          local like `/static` or a remote CDN like `//abc.mycdn/project`;
  - `$NODE_HOST`
  - `$NODE_PORT`
 

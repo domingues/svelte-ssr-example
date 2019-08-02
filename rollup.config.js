@@ -8,6 +8,7 @@ import { terser } from 'rollup-plugin-terser';
 import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import del from 'rollup-plugin-delete';
+import json from 'rollup-plugin-json';
 
 const production = !process.env.ROLLUP_WATCH;
 const publicStaticPath = process.env.PUBLIC_STATIC_PATH || '/static';
@@ -88,12 +89,14 @@ export default [
                 STATIC_PATH: publicStaticPath,
                 DEV_SERVER: !production,
             }),
+            resolve({ preferBuiltins: true }),
             commonjs(),
-            resolve(),
+            json(),
             production && terser()
         ],
         external: [
-            'fs', 'path', 'querystring', 'http'
+            'fs', 'path', 'querystring', 'http', 'zlib', 'buffer',
+            'tty', 'util', 'net', 'events', 'stream', 'string_decoder',
         ],
     }
 ];
