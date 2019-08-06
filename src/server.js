@@ -101,10 +101,10 @@ function buildPage(component, props_json, clientImports, serverClientMap) {
     return { page };
 }
 
-const HOST = process.env.NODE_HOST || '0.0.0.0';
+const HOST = process.env.NODE_HOST || 'localhost';
 const PORT = process.env.NODE_PORT || 3000;
 const PUBLIC_STATIC_PATH = 'STATIC_PATH';
-const DEV = 'DEV_SERVER';
+const DEV = 'DEV_SERVER' === 'true';
 
 const { clientImports, serverClientMap } = parseBundleTree('client-tree.json', PUBLIC_STATIC_PATH);
 

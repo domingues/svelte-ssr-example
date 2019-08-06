@@ -1,5 +1,9 @@
 # svelte-ssr-example changelog
 
+## 1.3.1 (06/08/2019)
+ - Fix `DEV_SERVER` switch;
+ - Change default `NODE_HOST` to `localhost`;
+
 ## 1.3.0 (02/08/2019)
  - Allow POST requests;
  - Set HTML content type charset to UTF 8;
