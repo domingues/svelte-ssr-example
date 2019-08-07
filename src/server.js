@@ -65,7 +65,7 @@ function render(component_path, props_json, head, html) {
 			props: ${props_json}
 		});
 	</script>
-    <script> </script>
+	<script> </script>
 </body>
 </html>`;
 }
@@ -127,7 +127,7 @@ const respond = (req, res) => {
         const result = buildPage(req.params['*'] ? req.params['*'] : 'index', props, clientImports, serverClientMap);
         if (result.error) {
             code = 500;
-            html = `<!DOCTYPE html><html lang="en"><body>Error ${result.error}:<br/>${result.code}.</body></html>`;
+            html = `<!DOCTYPE html><html lang="en"><body>Error ${result.error}:<br/><pre>${result.code}</pre></body></html>`;
         } else {
             code = 200;
             html = result.page;
@@ -135,7 +135,7 @@ const respond = (req, res) => {
     } catch (err) {
         console.error(err); // eslint-disable-line
         code = 500;
-        html = `<!DOCTYPE html><html lang="en"><body>Unknown error:<br/>${err}.</body></html>`;
+        html = `<!DOCTYPE html><html lang="en"><body>Unknown error:<br/><pre>${err}</pre></body></html>`;
     }
     res.writeHead(code, {
         'Content-Type': 'text/html; charset=utf-8',

@@ -1,5 +1,8 @@
 # svelte-ssr-example changelog
 
+## 1.3.2 (07/08/2019)
+ - Add `pre` tag server to errors;
+
 ## 1.3.1 (06/08/2019)
  - Fix `DEV_SERVER` switch;
  - Change default `NODE_HOST` to `localhost`;
