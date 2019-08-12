@@ -12,7 +12,7 @@
     "polka": "^0.5.2",
     "rollup": "^1.19.4",
     "rollup-plugin-commonjs": "^10.0.2",
-    "rollup-plugin-css-chunks": "^1.2.2",
+    "rollup-plugin-css-chunks": "^1.2.3",
     "rollup-plugin-delete": "^1.0.0",
     "rollup-plugin-extract-bundle-tree": "^1.1.1",
     "rollup-plugin-import-assets": "^1.1.0",
