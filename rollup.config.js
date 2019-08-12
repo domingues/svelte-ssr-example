@@ -9,6 +9,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import del from 'rollup-plugin-delete';
 import json from 'rollup-plugin-json';
+import livereload from 'rollup-plugin-livereload';
 
 const production = !process.env.ROLLUP_WATCH;
 const publicStaticPath = process.env.PUBLIC_STATIC_PATH || '/static';
@@ -44,6 +45,10 @@ export default [
             }),
             bundleTree({
                 file: 'dist/client-tree.json'
+            }),
+            !production && livereload({
+                watch: 'dist/server',
+                delay: 750,
             }),
             production && terser()
         ],

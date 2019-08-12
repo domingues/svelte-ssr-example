@@ -1,5 +1,9 @@
 # svelte-ssr-example changelog
 
+## 1.3.3 (12/08/2019)
+ - Add browser live reload to dev server;
+ - Upgrade dependencies;
+ 
 ## 1.3.2 (07/08/2019)
  - Add `pre` tag server to errors;
 
