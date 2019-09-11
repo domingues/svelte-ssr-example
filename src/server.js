@@ -57,7 +57,7 @@ function render(component_path, props_json, head, html) {
 </head>
 <body>
 	<div id='content'>${html}</div>
-	<script id='anchor' type='module'>
+	<script type='module'>
 		import App from '${component_path}';
 		new App({
 			target: document.getElementById('content'),

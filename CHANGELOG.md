@@ -1,5 +1,9 @@
 # svelte-ssr-example changelog
 
+## 1.3.4 (11/09/2019)
+ - Remove unknown HTML id from script tag;
+ - Upgrade dependencies;
+
 ## 1.3.3 (12/08/2019)
  - Add browser live reload to dev server;
  - Upgrade dependencies;
