@@ -1,5 +1,8 @@
 # svelte-ssr-example changelog
 
+## 1.3.5 (21/05/2020)
+ - Upgrade dependencies;
+
 ## 1.3.4 (11/09/2019)
  - Remove unknown HTML id from script tag;
  - Upgrade dependencies;
