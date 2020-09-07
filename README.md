@@ -38,8 +38,11 @@ curl --header "Content-Type: application/json" \
 
 ## Environment variables
 
+### Build time
  - `$PUBLIC_STATIC_PATH`: path where the static files will be located,
                           local like `/static` or a remote CDN like `//abc.mycdn/project`;
+
+### Runtime
  - `$NODE_HOST`
  - `$NODE_PORT`
 

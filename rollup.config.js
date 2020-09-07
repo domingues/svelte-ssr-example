@@ -5,7 +5,7 @@ import css from 'rollup-plugin-css-chunks';
 import bundleTree from 'rollup-plugin-extract-bundle-tree';
 import importAssets from 'rollup-plugin-import-assets';
 import { terser } from 'rollup-plugin-terser';
-import commonjs from 'rollup-plugin-commonjs';
+import commonjs from '@rollup/plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import del from 'rollup-plugin-delete';
 import json from 'rollup-plugin-json';
@@ -61,6 +61,7 @@ export default [
         output: {
             dir: 'dist/server',
             format: 'cjs',
+            exports: 'default'
         },
         plugins: [
             del({targets: 'dist/server/*'}),

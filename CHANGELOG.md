@@ -1,5 +1,9 @@
 # svelte-ssr-example changelog
 
+## 1.3.6 (07/09/2020)
+ - Upgrade dependencies;
+ - Fix README;
+
 ## 1.3.5 (21/05/2020)
  - Upgrade dependencies;
 
