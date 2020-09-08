@@ -40,7 +40,7 @@ function parseBundleTree(file, public_static_path) {
         const { css, js } = dfs(file);
         const file_public_path = urljoin(public_static_path, file);
         clientImports[file_public_path] = { css: [...new Set(css)], js: [...new Set(js)] };
-        serverClientMap[path.basename(file).split('.')[0]] = file_public_path;
+        serverClientMap[bundle_tree[file].chunkName] = file_public_path;
     }
 
     return { clientImports, serverClientMap };

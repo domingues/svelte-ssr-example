@@ -22,7 +22,7 @@ export default [
             sourcemap: !production,
             format: 'esm',
             chunkFileNames: '[hash].js',
-            entryFileNames: '[name].[hash].js'
+            entryFileNames: '[hash].js',
         },
         plugins: [
             del({targets: 'dist/client/*'}),
@@ -37,7 +37,7 @@ export default [
             css({
                 sourcemap: !production,
                 chunkFileNames: '[hash].css',
-                entryFileNames: '[hash].css'
+                entryFileNames: '[hash].css',
             }),
             importAssets({
                 fileNames: '[hash].[ext]',
