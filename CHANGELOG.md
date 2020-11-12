@@ -1,5 +1,8 @@
 # svelte-ssr-example changelog
 
+## 1.4.1 (12/11/2020)
+ - Upgrade dependencies;
+
 ## 1.4.0 (08/09/2020)
  - Upgrade `rollup-plugin-extract-bundle-tree` to allow entry javascript files with hash file name;
 
