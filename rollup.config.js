@@ -4,7 +4,7 @@ import svelte from 'rollup-plugin-svelte';
 import css from 'rollup-plugin-css-chunks';
 import bundleTree from 'rollup-plugin-extract-bundle-tree';
 import importAssets from 'rollup-plugin-import-assets';
-import { terser } from 'rollup-plugin-terser';
+import {terser} from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
 import del from 'rollup-plugin-delete';
@@ -29,31 +29,32 @@ export default [
             multiInput(),
             resolve({browser: true}),
             svelte({
-                dev: !production,
-                immutable: true,
-                hydratable: true,
-                emitCss: true
+                compilerOptions: {
+                    dev: !production,
+                    immutable: true,
+                    hydratable: true,
+                },
             }),
             css({
-                sourcemap: !production,
                 chunkFileNames: '[hash].css',
                 entryFileNames: '[hash].css',
+                sourcemap: !production,
             }),
             importAssets({
                 fileNames: '[hash].[ext]',
                 publicPath: publicStaticPath,
             }),
             bundleTree({
-                file: 'dist/client-tree.json'
+                file: 'dist/client-tree.json',
             }),
             !production && livereload({
                 watch: 'dist/server',
                 delay: 750,
             }),
-            production && terser()
+            production && terser(),
         ],
         watch: {
-            clearScreen: false
+            clearScreen: false,
         },
     },
     {
@@ -61,27 +62,29 @@ export default [
         output: {
             dir: 'dist/server',
             format: 'cjs',
-            exports: 'default'
+            exports: 'default',
         },
         plugins: [
             del({targets: 'dist/server/*'}),
             multiInput(),
             resolve(),
             svelte({
-                dev: !production,
-                immutable: true,
-                hydratable: true,
-                generate: 'ssr',
+                compilerOptions: {
+                    dev: !production,
+                    immutable: true,
+                    hydratable: true,
+                    generate: 'ssr',
+                },
             }),
             css({
-                ignore: true
+                emitFiles: false,
             }),
             importAssets({
                 fileNames: '[hash].[ext]',
                 publicPath: publicStaticPath,
                 emitAssets: false,
             }),
-            production && terser()
+            production && terser(),
         ],
     },
     {
@@ -95,14 +98,10 @@ export default [
                 STATIC_PATH: publicStaticPath,
                 DEV_SERVER: !production,
             }),
-            resolve({ preferBuiltins: true }),
+            resolve({preferBuiltins: true}),
             commonjs(),
             json(),
-            production && terser()
+            production && terser(),
         ],
-        external: [
-            'fs', 'path', 'querystring', 'http', 'zlib', 'buffer',
-            'tty', 'util', 'net', 'events', 'stream', 'string_decoder',
-        ],
-    }
+    },
 ];

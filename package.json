@@ -1,31 +1,31 @@
 {
   "name": "svelte-ssr-example",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^10.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-replace": "^2.3.4",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
-    "eslint": "^7.13.0",
+    "eslint": "^7.14.0",
     "eslint-plugin-svelte3": "^2.7.3",
     "feather-icons": "^4.28.0",
     "nodemon": "^2.0.6",
     "npm-run-all": "^4.1.5",
     "polka": "^0.5.2",
-    "rollup": "^2.33.1",
-    "rollup-plugin-css-chunks": "^1.2.8",
+    "rollup": "^2.34.0",
+    "rollup-plugin-css-chunks": "^2.0.0",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-extract-bundle-tree": "^1.2.0",
     "rollup-plugin-import-assets": "1.1.1",
     "rollup-plugin-livereload": "^2.0.0",
     "rollup-plugin-multi-input": "^1.1.1",
-    "rollup-plugin-svelte": "^6.1.1",
+    "rollup-plugin-svelte": "^7.0.0",
     "rollup-plugin-terser": "^7.0.2",
     "sirv": "^1.0.7",
-    "svelte": "^3.29.7",
-    "svelte-check": "^1.1.11",
+    "svelte": "^3.30.1",
+    "svelte-check": "^1.1.17",
     "url-join": "^4.0.1"
   },
   "scripts": {
@@ -36,6 +36,5 @@
     "start:dev": "run-p autobuild autostart",
     "lint": "eslint --ext .js,.mjs,.svelte src",
     "svelte-check": "svelte-check"
-  },
-  "dependencies": {}
+  }
 }
